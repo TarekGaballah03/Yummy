@@ -1,21 +1,67 @@
 const BASE_URL = "https://www.themealdb.com";
 let rowData = document.getElementById("rowData");
-for(let i=0;i<24;i++){
+let submitBtn;
+let nameInputTouched = false;
+let emailInputTouched = false;
+let phoneInputTouched = false;
+let ageInputTouched = false;
+let passwordInputTouched = false;
+let repasswordInputTouched = false;
+
+$(document).ready(() => {
+    searchByName("").then(() => {
+        $(".loading-screen").fadeOut(500)
+        $("body").css("overflow", "visible")
+
+    })
+})
+
+for(let i=0;i<18;i++){
     getdefaultSection();
     }
 function OpenNav(){
     $(".nav-tab").animate({ width:'100%'},500);
     $(".menu").removeClass("fa-bars").addClass("fa-x");
+    showListAnimation();
 }
 function CloseNav(){
     $(".nav-tab").animate({ width:'0'},500)
     $(".menu").removeClass("fa-x").addClass("fa-bars");
+    hideListAnimation();
 }
+function showListAnimation() {
+    $(".links .list-unstyled li").each(function(index) {
+      $(this).css({
+        position: "relative",top: "20px",opacity: "0"}).animate({ top: "0",opacity: "1"
+      }, 500, "swing", function() {
+        if (index === $(".links .list-unstyled li").length - 1) {
+        }
+      });
+    });
+  }
+  function hideListAnimation() {
+    $(".links .list-unstyled li").each(function(index) {
+      $(this).css({
+        position: "relative",
+        top: "0",
+        opacity: "1"
+      }).animate({
+        top: "20px",
+        opacity: "0"
+      }, 500, "swing", function() {
+        if (index === $(".links .list-unstyled li").length - 1) {
+        }
+      });
+    });
+  }
+  
 async function getdefaultSection() {
+    $(".inner-loading-screen").fadeIn(300);
     rowData.innerHTML = "";
     let response = await fetch(`${BASE_URL}/api/json/v1/1/random.php`);
     let data = await response.json();
     displaydefaultSection(data.meals);
+    $(".inner-loading-screen").fadeOut(300);
 }
     
 function displaydefaultSection(arr) {
@@ -37,11 +83,13 @@ function displaydefaultSection(arr) {
         rowData.innerHTML += string;
 }
 async function getCategories() {
+    $(".inner-loading-screen").fadeIn(300);
     rowData.innerHTML = "";
     searchContainer.innerHTML="";
     let response = await fetch(`${BASE_URL}/api/json/v1/1/categories.php`);
     let data = await response.json();
     displayCategories(data.categories);
+    $(".inner-loading-screen").fadeOut(300);
 }
 
 function displayCategories(arr) {
@@ -49,12 +97,11 @@ function displayCategories(arr) {
     for (let i = 0; i < arr.length; i++) {
         string += `
         <div class="col-md-3">
-                <div  class="meal position-relative overflow-hidden rounded-2 pointer">
+                <div onclick="getCategoryMeals('${arr[i].strCategory}')" class="meal position-relative overflow-hidden rounded-2 pointer">
                     <img class="w-100 " src="${arr[i].strCategoryThumb}" alt="" srcset="">
                     <div class="meal-layer position-absolute text-center text-black p-2">
                         <h3>${arr[i].strCategory}</h3>
                         <p>${arr[i].strCategoryDescription.split(" ").slice(0,18).join(" ")}</p>
-                        <button onclick="getCategoryMeals('${arr[i].strCategory}')" class="btn btn bg-success ps-3 pe-3">More Details:</button>
                     </div>
                 </div>
         </div>
@@ -63,12 +110,14 @@ function displayCategories(arr) {
     rowData.innerHTML = string;
 }
 async function getMealDetails(mealID) {
+    $(".inner-loading-screen").fadeIn(300);
     rowData.innerHTML = "";
     searchContainer.innerHTML="";
     CloseNav();
     let respone = await fetch(`${BASE_URL}/api/json/v1/1/lookup.php?i=${mealID}`);
     let data = await respone.json();
-    displayMealDetails(data.meals[0])
+    displayMealDetails(data.meals[0]);
+    $(".inner-loading-screen").fadeOut(300);
 }
 function displayMealDetails(meal) {
     let ingredients = ``
@@ -113,11 +162,13 @@ function displayMealDetails(meal) {
     rowData.innerHTML = string;
 }
 async function getCategoryMeals() {
+    $(".inner-loading-screen").fadeIn(300);
     rowData.innerHTML = "";
     searchContainer.innerHTML="";
     let response = await fetch(`${BASE_URL}/api/json/v1/1/filter.php?a=${area}`);
     let data = await response.json();
     displayMeals(data.meals.slice(0, 20));
+    $(".inner-loading-screen").fadeOut(300);
 }
 function displayMeals(arr) {
     let string = "";
@@ -138,11 +189,13 @@ function displayMeals(arr) {
     rowData.innerHTML = string;
 }
 async function getArea() {
+    $(".inner-loading-screen").fadeIn(300);
     rowData.innerHTML = "";
     searchContainer.innerHTML="";
     let respone = await fetch(`${BASE_URL}/api/json/v1/1/list.php?a=list`);
     let data = await respone.json();
     displayArea(data.meals)
+    $(".inner-loading-screen").fadeOut(300);
 }
 function displayArea(arr) {
     let string = "";
@@ -160,11 +213,13 @@ function displayArea(arr) {
     rowData.innerHTML = string;
 }
 async function getIngredients() {
+    $(".inner-loading-screen").fadeIn(300);
     rowData.innerHTML = "";
     searchContainer.innerHTML="";
     let respone = await fetch(`${BASE_URL}/api/json/v1/1/list.php?i=list`);
     let data = await respone.json();
     displayIngredients(data.meals.slice(0, 20));
+    $(".inner-loading-screen").fadeOut(300);
 }
 function displayIngredients(arr) {
     let string = "";
@@ -183,25 +238,31 @@ function displayIngredients(arr) {
     rowData.innerHTML = string;
 }
 async function getCategoryMeals(category) {
+    $(".inner-loading-screen").fadeIn(300);
     rowData.innerHTML = "";
     searchContainer.innerHTML="";
     let response = await fetch(`${BASE_URL}/api/json/v1/1/filter.php?c=${category}`);
     let data = await response.json();
     displayMeals(data.meals.slice(0, 20));
+    $(".inner-loading-screen").fadeOut(300);
 }
 async function getAreaMeals(area) {
+    $(".inner-loading-screen").fadeIn(300);
     rowData.innerHTML = "";
     searchContainer.innerHTML="";
     let response = await fetch(`${BASE_URL}/api/json/v1/1/filter.php?a=${area}`);
     let data = await response.json();
     displayMeals(data.meals.slice(0, 20));
+    $(".inner-loading-screen").fadeOut(300);
 }
 async function getIngredientsMeals(ingredients) {
+    $(".inner-loading-screen").fadeIn(300);
     rowData.innerHTML = "";
     searchContainer.innerHTML="";
     let response = await fetch(`${BASE_URL}/api/json/v1/1/filter.php?i=${ingredients}`);
     let data = await response.json();
     displayMeals(data.meals.slice(0, 20));
+    $(".inner-loading-screen").fadeOut(300);
 }
 function showSearchInputs() {
     searchContainer.innerHTML = `
@@ -233,6 +294,7 @@ async function searchByFLetter(term) {
     data.meals ? displayMeals(data.meals) : displayMeals([])
 }
 function showContacts() {
+    searchContainer.innerHTML="";
     rowData.innerHTML = `<div class="contact min-vh-100 d-flex justify-content-center align-items-center">
     <div class="container w-75 text-center">
         <div class="row g-4">
@@ -277,8 +339,6 @@ function showContacts() {
     </div>
 </div> `
     submitBtn = document.getElementById("submitBtn")
-
-
     document.getElementById("nameInput").addEventListener("focus", () => {
         nameInputTouched = true
     })
@@ -302,7 +362,111 @@ function showContacts() {
     document.getElementById("repasswordInput").addEventListener("focus", () => {
         repasswordInputTouched = true
     })
+    $("#submitBtn").click(function(){
+        $("#box").removeClass("d-none").addClass("d-flex");
+           reset();
+       });
+    $("#close").click(function(){
+        $("#box").removeClass("d-flex").addClass("d-none");
+        submitBtn.setAttribute("disabled", true);
+       });
 }
+function inputsValidation() {
+    if (nameInputTouched) {
+        if (nameValidation()) {
+            document.getElementById("nameAlert").classList.replace("d-block", "d-none")
+
+        } else {
+            document.getElementById("nameAlert").classList.replace("d-none", "d-block")
+
+        }
+    }
+    if (emailInputTouched) {
+
+        if (emailValidation()) {
+            document.getElementById("emailAlert").classList.replace("d-block", "d-none")
+        } else {
+            document.getElementById("emailAlert").classList.replace("d-none", "d-block")
+
+        }
+    }
+
+    if (phoneInputTouched) {
+        if (phoneValidation()) {
+            document.getElementById("phoneAlert").classList.replace("d-block", "d-none")
+        } else {
+            document.getElementById("phoneAlert").classList.replace("d-none", "d-block")
+
+        }
+    }
+
+    if (ageInputTouched) {
+        if (ageValidation()) {
+            document.getElementById("ageAlert").classList.replace("d-block", "d-none")
+        } else {
+            document.getElementById("ageAlert").classList.replace("d-none", "d-block")
+
+        }
+    }
+
+    if (passwordInputTouched) {
+        if (passwordValidation()) {
+            document.getElementById("passwordAlert").classList.replace("d-block", "d-none")
+        } else {
+            document.getElementById("passwordAlert").classList.replace("d-none", "d-block")
+
+        }
+    }
+    if (repasswordInputTouched) {
+        if (repasswordValidation()) {
+            document.getElementById("repasswordAlert").classList.replace("d-block", "d-none")
+        } else {
+            document.getElementById("repasswordAlert").classList.replace("d-none", "d-block")
+
+        }
+    }
+
+
+    if (nameValidation() &&
+        emailValidation() &&
+        phoneValidation() &&
+        ageValidation() &&
+        passwordValidation() &&
+        repasswordValidation()) {
+        submitBtn.removeAttribute("disabled");
+
+    } else {
+        submitBtn.setAttribute("disabled", true);
+    }
+    
+}
+function reset() {
+    nameInput.value = "";
+    emailInput.value = "";
+    phoneInput.value = "";
+    ageInput.value = "";
+    passwordInput.value = "";
+    repasswordInput.value = "";
+}
+function nameValidation() {
+    return (/^[a-zA-Z ]+$/.test(document.getElementById("nameInput").value))
+}
+function emailValidation() {
+    return (/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(document.getElementById("emailInput").value))
+}
+function phoneValidation() {
+    return (/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/.test(document.getElementById("phoneInput").value))
+}
+function ageValidation() {
+    return (/^(0?[1-9]|[1-9][0-9]|[1][1-9][1-9]|200)$/.test(document.getElementById("ageInput").value))
+}
+function passwordValidation() {
+    return (/^(?=.*\d)(?=.*[a-z])[0-9a-zA-Z]{8,}$/.test(document.getElementById("passwordInput").value))
+}
+function repasswordValidation() {
+    return document.getElementById("repasswordInput").value == document.getElementById("passwordInput").value
+}
+
 $(".menu").on("click", function() {
     if ($(this).hasClass("fa-bars")) {
         OpenNav();
@@ -332,3 +496,4 @@ $(".contact").click(function(){
     showContacts();
     CloseNav();
 });
+

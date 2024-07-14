@@ -1,3 +1,6 @@
+body{
+    overflow: hidden;
+}
 .first{
     width: 60px;
 }
@@ -9,6 +12,57 @@
 .sidenav{
     z-index: 999;
 }
+.loading-screen{
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+.loader {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #FF3D00;
+    position: relative;
+  }
+  .loader:before,
+  .loader:after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    inset: 0;
+    background: #fff;
+    transform: rotate(0deg) translate(30px);
+    animation: rotate 1s ease infinite;
+  }
+  .loader:after {
+    animation-delay: 0.5s
+  }
+  @keyframes rotate {
+    100% {transform: rotate(360deg) translate(30px)
+  }}
+.inner-loading-screen{
+    position: absolute;
+    z-index: 9;
+    background-color: #0D0D0D;
+    display: flex;
+}
+
+.box .content{
+    width: 40%;
+    height: 20vh;
+
+    i{
+        display: inline-block;
+    }
+    
+}    
 .pointer{
     cursor: pointer;
 }
