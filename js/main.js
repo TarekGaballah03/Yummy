@@ -1,31 +1,31 @@
+//Parameters
 const BASE_URL = "https://www.themealdb.com";
 let rowData = document.getElementById("rowData");
 let submitBtn;
+let defaultSection=[];
 let nameInputTouched = false;
 let emailInputTouched = false;
 let phoneInputTouched = false;
 let ageInputTouched = false;
 let passwordInputTouched = false;
 let repasswordInputTouched = false;
-
+//Loading screen when its ready
 $(document).ready(() => {
     searchByName("").then(() => {
-        $(".loading-screen").fadeOut(500)
-        $("body").css("overflow", "visible")
-
+        $(".loading-screen").fadeOut(500);
+        $("body").css("overflow", "visible");
     })
 })
-
-for(let i=0;i<18;i++){
-    getdefaultSection();
-    }
+//first function when opening the site
+getdefaultSection();
+//two functions to open and close navbar with animations
 function OpenNav(){
     $(".nav-tab").animate({ width:'100%'},500);
     $(".menu").removeClass("fa-bars").addClass("fa-x");
     showListAnimation();
 }
 function CloseNav(){
-    $(".nav-tab").animate({ width:'0'},500)
+    $(".nav-tab").animate({ width:'0'},500);
     $(".menu").removeClass("fa-x").addClass("fa-bars");
     hideListAnimation();
 }
@@ -54,16 +54,17 @@ function showListAnimation() {
       });
     });
   }
-  
+  // Different functions to get api and display data
 async function getdefaultSection() {
-    $(".inner-loading-screen").fadeIn(300);
+    $(".inner-loading-screen").removeClass("position-absolute").addClass("d-none");
     rowData.innerHTML = "";
-    let response = await fetch(`${BASE_URL}/api/json/v1/1/random.php`);
-    let data = await response.json();
-    displaydefaultSection(data.meals);
-    $(".inner-loading-screen").fadeOut(300);
+    for(let i=0 ; i<20; i++){
+        let response = await fetch(`${BASE_URL}/api/json/v1/1/random.php`);
+        let data = await response.json();
+        defaultSection.push(data.meals[i]);
+    }
+    displaydefaultSection(defaultSection);
 }
-    
 function displaydefaultSection(arr) {
     let string = "";
     for (let i = 0; i < arr.length; i++) {
@@ -83,6 +84,7 @@ function displaydefaultSection(arr) {
         rowData.innerHTML += string;
 }
 async function getCategories() {
+    $(".inner-loading-screen").removeClass("d-none").addClass("position-absolute")
     $(".inner-loading-screen").fadeIn(300);
     rowData.innerHTML = "";
     searchContainer.innerHTML="";
@@ -110,6 +112,7 @@ function displayCategories(arr) {
     rowData.innerHTML = string;
 }
 async function getMealDetails(mealID) {
+    $(".inner-loading-screen").removeClass("d-none").addClass("position-absolute")
     $(".inner-loading-screen").fadeIn(300);
     rowData.innerHTML = "";
     searchContainer.innerHTML="";
@@ -189,6 +192,7 @@ function displayMeals(arr) {
     rowData.innerHTML = string;
 }
 async function getArea() {
+    $(".inner-loading-screen").removeClass("d-none").addClass("position-absolute")
     $(".inner-loading-screen").fadeIn(300);
     rowData.innerHTML = "";
     searchContainer.innerHTML="";
@@ -213,6 +217,7 @@ function displayArea(arr) {
     rowData.innerHTML = string;
 }
 async function getIngredients() {
+    $(".inner-loading-screen").removeClass("d-none").addClass("position-absolute")
     $(".inner-loading-screen").fadeIn(300);
     rowData.innerHTML = "";
     searchContainer.innerHTML="";
@@ -277,7 +282,7 @@ function showSearchInputs() {
 
     rowData.innerHTML = ""
 }
-
+// two function to search with name and first letter
 async function searchByName(term) {
     CloseNav();
     rowData.innerHTML = "";
@@ -362,6 +367,7 @@ function showContacts() {
     document.getElementById("repasswordInput").addEventListener("focus", () => {
         repasswordInputTouched = true
     })
+    //when clicking on submit btn show a message
     $("#submitBtn").click(function(){
         $("#box").removeClass("d-none").addClass("d-flex");
            reset();
@@ -370,7 +376,7 @@ function showContacts() {
         $("#box").removeClass("d-flex").addClass("d-none");
         submitBtn.setAttribute("disabled", true);
        });
-}
+}//check the validation
 function inputsValidation() {
     if (nameInputTouched) {
         if (nameValidation()) {
@@ -440,6 +446,7 @@ function inputsValidation() {
     }
     
 }
+//function to delete all inputs after submiting
 function reset() {
     nameInput.value = "";
     emailInput.value = "";
@@ -448,6 +455,7 @@ function reset() {
     passwordInput.value = "";
     repasswordInput.value = "";
 }
+//check validation using regex
 function nameValidation() {
     return (/^[a-zA-Z ]+$/.test(document.getElementById("nameInput").value))
 }
@@ -466,7 +474,7 @@ function passwordValidation() {
 function repasswordValidation() {
     return document.getElementById("repasswordInput").value == document.getElementById("passwordInput").value
 }
-
+//different functions when clicking 
 $(".menu").on("click", function() {
     if ($(this).hasClass("fa-bars")) {
         OpenNav();
